@@ -4,28 +4,31 @@
 
 import media
 import fresh_tomatoes
+import requests
 
+#The first movie is manually entered, the next two use an api to get their data.
 i_am_legend = media.Movie("I am Legend",
                                 "https://upload.wikimedia.org/wikipedia/en/d/df/I_am_legend_teaser.jpg",# NOQA
                                 "https://www.youtube.com/watch?v=ewpYq9rgg3w",
                                 "Can one man save humanity?")
 
-the_bourne_identity = media.Movie("The Bourne Identity",
-                                        "https://upload.wikimedia.org/wikipedia/en/a/ae/BourneIdentityfilm.jpg",# NOQA
+bourne_response = requests.get("http://www.omdbapi.com/?t=The+Bourne+Identity")
+bourne_data = bourne_response.json()
+the_bourne_identity = media.Movie(bourne_data['Title'],
+                                        bourne_data['Poster'],
                                         "https://www.youtube.com/watch?v=FpKaB5dvQ4g",# NOQA
-                                        "A super spy has his own government "
-                                        "turn against him, and he doesn't"
-                                        " remember why.")
+                                        bourne_data['Plot'])
 
-lotr_return_of_the_king = media.Movie("LOTR Return of the King",
-                                            "https://upload.wikimedia.org/wikipedia/en/9/9d/Lord_of_the_Rings_-_The_Return_of_the_King.jpg",# NOQA
-                                            "https://www.youtube.com/watch?v=r5X-hFf6Bwo",# NOQA
-                                            "Can two hobbits save Middle "
-                                            "Earth?")
+potter_response = requests.get("http://www.omdbapi.com/?t=Harry+Potter+and+the+",
+    "Deathly+Hallows")
+potter_data = potter_response.json()
+harry_potter = media.Movie(potter_data['Title'],potter_data['Poster'], 
+                                "https://www.youtube.com/watch?v=5NYt1qirBWg",
+                                potter_data['Plot'])
 
 
 #Place all the movies into a list that will 
 #be provided to the fresh_tomatoes program
-movies = [i_am_legend, the_bourne_identity, lotr_return_of_the_king]
+movies = [i_am_legend, the_bourne_identity, harry_potter]
 
 fresh_tomatoes.open_movies_page(movies)
